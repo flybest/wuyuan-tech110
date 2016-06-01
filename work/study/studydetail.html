@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>科技110-study-detail</title>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+	</head>
+	<body> 
+		<header id="navtitle" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title adp-title">信息详情</h1>
+		</header>
+		<div id="infoForm" class="mui-content workForm">
+			<div class="info-header">
+				<div class="mui-row">
+					<div class="mui-col-xs-12">
+						<h3 id="infoTitle" class="mui-ellipsis">{{title}}</h3>
+					</div>
+				</div>
+				<div class="mui-row">
+					<div id="infoSource" class="mui-col-xs-6">{{source}}</div>
+					<div id="infoAuthor" class="mui-col-xs-6">{{author}}</div>
+				</div>
+				<div class="mui-row">
+					<div id="infoCategory" class="mui-col-xs-6">{{category}}</div>
+					<div id="publishDate" class="mui-col-xs-6">{{date}}</div>
+				</div>
+			</div>
+			<div id="infoContent" class="info-content">
+				{{content}}
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/app.js" ></script>
+		<script type="text/javascript" src="../../js/errorcode.js" ></script>
+		<script type="text/javascript" src="../../js/userinfo.js" ></script>
+		<script>
+			var wd, infoId='';
+			var components=["infoTitle","infoSource","infoAuthor","infoCategory","publishDate","infoContent"]
+
+			var initForm = function(){
+				infoId='';
+				for(c in components){
+					try{
+						app.setHTML('#'+components[c],'');
+					}catch(e){
+						console.log(e.message);
+						continue;
+					};
+				};
+			};
+
+			var onSuccess = function(data){
+				//处理DOM对象，显示信息内容
+				try{
+					for(c in components){
+						try{
+							app.setHTML('#'+components[c], data[components[c]]);
+						}catch(e){
+							console.log(e.message);
+							continue;
+						}
+					}
+				}catch(e){
+					console.log(e.message);
+				    mui.toast(errorCode.BAD_DATA);
+				}
+				wd.close();
+			};
+			
+			var onError = function(errcode){
+				wd.close(); // 失败，先关闭等待的对话框  
+				switch(errcode){
+				    case 'FAILED_NETWORK':
+				        mui.toast(errorCode.FAILED_NETWORK);
+				        break;
+				    case 'INVALID_INFO':
+				    		mui.toast(errorCode.INVALID_INFO);
+				        break;
+				    default:
+				        mui.toast(errorCode.UNKNOW_ERROR);
+			   };
+			};
+
+			(function($) {
+				$.init({});
+				$.plusReady(function(){
+					window.addEventListener('getDetail',function(event){
+			      		initForm();
+			      		if(event.detail.id){
+			      			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
+			      			var params={infoId:event.detail.id, infoType:event.detail.type};
+			      			app.webQuery(app.getstudydetail_url,params,onSuccess,onError,1);
+			      		}	
+			    		});
+				});
+			})(mui);
+		</script>
+	</body>
+</html>

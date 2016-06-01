@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>科技110-导航</title>
+    <link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/app.css"/>
+</head>
+<body>
+	<header id="navtitle" class="mui-bar mui-bar-nav">
+		<h1  class="mui-title adp-title">菜单</h1>
+		<a data-page="setting" class="mui-icon mui-icon-gear mui-pull-right"></a>
+	</header>
+	<div id="navcontent" class="mui-content">
+		<ul class="mui-table-view mui-grid-view mui-grid-9">
+            <!--<li class="mui-table-view-cell mui-media mui-col-xs-6">
+            		<a data-page="">
+	                <span class=""><img src="img/news.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">通知公告</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-6">
+            		<a data-page="">
+	                <span class=""><img src="img/warninginfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">农情预警</div>
+            		</a>
+            </li>-->
+             <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="techqa">
+	                <span class=""><img src="img/changeinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">农技答疑</div>
+            		</a>
+            </li>
+             <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="techguide">
+	                <span class=""><img src="img/upinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">农技指导</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="plantstatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">种植统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="breedstatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">养殖统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="disasterstatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">灾情统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="capitalstatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">农资统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="pricestatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">价格统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="planttech">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">种植技术</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="breedtech">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">养殖技术</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="protectknowledge">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">防控知识</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="showmethemoney">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">农民致富</div>
+            		</a>
+            </li>
+        </ul> 
+	</div>
+	<script type="text/javascript" src="js/mui.min.js"></script>
+	<script type="text/javascript" src="js/app.js" ></script>
+	<script type="text/javascript">
+		var urlList={
+			"techqa":{
+				url: app.project_url+'work/techqa/techqasearch.html',
+				id: 'techqa',
+				subpages:[{
+					"id":"techqasearchlist",
+					"url" : app.project_url+"work/techqa/techqasearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"techguide":{
+				url: app.project_url+'work/techguide/techguidesearch.html',
+				id: 'techguide',
+				subpages:[{
+					"id":"techguidesearchlist",
+					"url" : app.project_url+"work/techguide/techguidesearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"plantstatistic":{
+				url: app.project_url+'work/plantstatistic/plantstatisticsearch.html',
+				id: 'plantstatistic',
+				subpages:[{
+					"id":"plantstatisticsearchlist",
+					"url" : app.project_url+"work/plantstatistic/plantstatisticsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"breedstatistic":{
+				url: app.project_url+'work/breedstatistic/breedstatisticsearch.html',
+				id: 'breedstatistic',
+				subpages:[{
+					"id":"breedstatisticsearchlist",
+					"url" : app.project_url+"work/breedstatistic/breedstatisticsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"disasterstatistic":{
+				url: app.project_url+'work/disasterstatistic/disasterstatisticsearch.html',
+				id: 'disasterstatistic',
+				subpages:[{
+					"id":"disasterstatisticsearchlist",
+					"url" : app.project_url+"work/disasterstatistic/disasterstatisticsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"capitalstatistic":{
+				url: app.project_url+'work/capitalstatistic/capitalstatisticsearch.html',
+				id: 'capitalstatistic',
+				subpages:[{
+					"id":"capitalstatisticsearchlist",
+					"url" : app.project_url+"work/capitalstatistic/capitalstatisticsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"pricestatistic":{
+				url: app.project_url+'work/pricestatistic/pricestatisticsearch.html',
+				id: 'pricestatistic',
+				subpages:[{
+					"id":"pricestatisticsearchlist",
+					"url" : app.project_url+"work/pricestatistic/pricestatisticsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"planttech":{
+				url: app.project_url+'work/study/planttechsearch.html',
+				id: 'planttech',
+				subpages:[{
+					"id":"planttechsearchlist",
+					"url" : app.project_url+"work/study/planttechsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"breedtech":{
+				url: app.project_url+'work/study/breedtechsearch.html',
+				id: 'breedtech',
+				subpages:[{
+					"id":"breedtechsearchlist",
+					"url" : app.project_url+"work/study/breedtechsearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"protectknowledge":{
+				url: app.project_url+'work/study/protectknowledgesearch.html',
+				id: 'protectknowledge',
+				subpages:[{
+					"id":"protectknowledgesearchlist",
+					"url" : app.project_url+"work/study/protectknowledgesearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			},
+			"showmethemoney":{
+				url: app.project_url+'work/study/showmethemoneysearch.html',
+				id: 'showmethemoney',
+				subpages:[{
+					"id":"showmethemoneysearchlist",
+					"url" : app.project_url+"work/study/showmethemoneysearchlist.html",
+					"styles":{
+						"top":"44px",
+						"bottom":"0px"
+					}
+				}],
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: false}	
+			}
+		};
+	
+		(function($){
+			$.init({
+				preloadPages:[{
+					"id": "setting",
+					"url":app.project_url+"setting.html"
+				}],
+				statusBarBackground: '#4a82d1' 
+			});
+			
+			$.plusReady(function(){
+				$("body").on('tap','a',function(e){
+					var pageId = this.getAttribute("data-page");
+					var view=plus.webview.getWebviewById(pageId);
+										
+					setTimeout(function() {
+						if(view)
+							$.openWindow({id:pageId});
+						else
+							$.openWindow(urlList[pageId]);
+					}, 0);
+				}); 
+				
+				$.back = function(){
+					var btn = ["确定","取消"];
+					$.confirm('确认退出应用？','提示',btn,function(e){
+						if(e.index==0){
+							//执行mui封装好的窗口关闭逻辑；
+							plus.runtime.quit();
+						}
+					});
+				};
+			});
+		}(mui));
+	</script>
+</body>
+</html>
