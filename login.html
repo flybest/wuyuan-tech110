@@ -32,7 +32,7 @@
 	<script type="text/javascript" src="js/errorcode.js" charset="utf-8"></script>
 	<script type="text/javascript" src="js/userinfo.js" charset="utf-8"></script>
 	<script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/md5.js"></script>
+<!--    <script type="text/javascript" src="js/md5.js"></script>-->
 	<script type="text/javascript">
 		(function($, doc) {
 			$.init({
@@ -63,6 +63,8 @@
 							if(stk.avatarurl=='ok')
 								userInfo.avatarurl(app.avatar_url +'?account='+loginInfo.account);
 							userInfo.tel(stk.tel);
+							//暂定1为专家，2为普通信息员，3为价格上报信息员
+							userInfo.usertype(stk.usertype);
 							wd.close(); // 登录成功，跳转窗口前关闭等待的对话框
 							toNav();
 						},function(dc){

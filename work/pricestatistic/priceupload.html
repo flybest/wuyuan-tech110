@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>科技110-价格统计-价格上报</title>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+</head>
+<body>
+	<header id="navtitle" class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" ></a>
+		<h1  class="mui-title adp-title">价格上报</h1>
+	</header>
+	<div class="mui-content workForm">
+		<div id="landSearchPart" class="workBlock">
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>市场</label>
+					<button id='market' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择市场</button>
+					<span  id="market-span" class="rightContent"  style="display:none;"></span>
+				</div>
+			</div>
+			
+		</div>
+		<div class="mui-content-padded" class="workBlock" style="height:20px;">
+			<h5 class="mui-pull-left">品种：</h5>
+			<a id="addProduct" class="mui-pull-right">添加</a>
+		</div>	
+		<div id="productList">
+			<!--<div class="mui-input-group item-group workBlock">
+				<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入品种"></div>
+				<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入价格"></div>
+				<span class="mui-icon mui-icon-close delIcon"></span>
+			</div>
+			<div class="mui-input-group item-group workBlock">
+				<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入品种"></div>
+				<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入价格"></div>
+				<span class="mui-icon mui-icon-close delIcon"></span>
+			</div>-->
+		</div>
+		<button id='submitBtn' class="mui-btn mui-btn-block mui-btn-success">提交</button>
+	</div>
+	<script type="text/javascript" src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+	<script type="text/javascript" src="../../js/app.js" ></script>
+	<script type="text/javascript" src="../../js/userinfo.js" ></script>
+	<script type="text/javascript" src="../../js/errorcode.js" ></script>
+	<script type="text/javascript" src="../../js/market.data.js" ></script>
+	<script type="text/javascript" src="../../js/plantcategory.data.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+	 	var wd, productId, isUpdate=false;
+	 			
+		/*增加新的品种*/
+		var addProduct = function(product){
+			var productForm=document.getElementById('productList');
+			var div=document.createElement('div');
+			div.className='mui-input-group item-group workBlock';
+			div.innerHTML='<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入动物名称"></div>'+
+			'<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入动物数量"></div>'+
+			'<span class="mui-icon mui-icon-close delIcon"></span>';
+			productForm.insertBefore(div,productForm.firstChild);
+			if(product){
+				div.querySelector('.productCategory').value=product.productCategory;
+				div.querySelector('.productCategory').setAttribute('disabled',true);
+				div.querySelector('.productPrice').value=product.productPrice;
+				div.querySelector('.delIcon').className='mui-icon mui-icon-close delIcon delIcon-disable';
+			}else{
+				var delBtn=div.querySelector('.delIcon');
+				delBtn.addEventListener('tap', function(){
+					var btn = ["确定","取消"];
+					mui.confirm('确认删除该条信息？','提示',btn,function(e){
+						if(e.index==0){
+							removeProduct(div);
+						}
+					});
+				});
+			}
+		}; 
+		
+		/*删除品种信息*/
+		var removeProduct = function(div){
+			var productForm=document.getElementById('productList');
+			productForm.removeChild(div);
+		};
+	 	
+		/*初始化页面控件，全部清空*/
+		var initForm = function(){ 
+			app.setText('#market','请选择市场');
+			app.setValue('market','');
+			app.setElementVisiablity('#addProduct',true);
+			var productForm=document.getElementById('productList');
+			mui('.item-group').each(function(i, obj){
+				productForm.removeChild(obj);
+			});
+			
+			app.setElementVisiablity('#market-span',false);
+			app.setElementVisiablity('#market',true);
+		}; 
+
+		var onSuccess = function(data){
+			//处理DOM对象，显示信息内容
+			try{
+				 app.setValue('market', data.market);
+				 app.setText('#market',app.getTextByValue(market,data.market));
+				 app.setText('#market-span',app.getTextByValue(market,data.market));
+				 app.setAttributeValue('market','disable',true);
+				 app.setElementVisiablity('#addProduct',false);
+				 for(var i=0;i<data.product.length;i++){
+				 	addProduct(data.product[i]);
+				 }
+				app.setElementVisiablity('#market-span',true);
+				app.setElementVisiablity('#market',false);
+			}catch(e){
+				console.log(e.message);
+			    mui.toast(errorCode.BAD_DATA);
+			}
+			wd.close();
+		};
+		
+		var onError = function(errcode){
+			wd.close(); // 失败，先关闭等待的对话框  
+			switch(errcode){
+			    case 'FAILED_NETWORK':
+			        mui.toast(errorCode.FAILED_NETWORK);
+			        break;
+			    case 'EMPTY_INFO':
+			    		mui.toast(errorCode.EMPTY_INFO);
+			        break;
+			    default:
+			        mui.toast(errorCode.UNKNOW_ERROR);
+		   };
+		};
+		
+		var onSubmitSuccess = function(data){
+			wd.close();
+			mui.toast('提交成功');
+			if(productId){
+				var detailPage = plus.webview.getWebviewById('pricestatistic');
+				mui.fire(detailPage,'reloadList',{});
+			}
+			mui.back();
+			return;
+		};
+		
+		var onSubmitError = function(errcode){
+			onError(errcode);
+		};
+
+		(function($, doc) {
+			$.init();
+			
+			$.plusReady(function() {
+				window.addEventListener('upgradePrice',function(event){	
+		      		initForm();
+		      		if(event.detail.id){
+		      			productId=event.detail.id;
+		      			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
+		      			var params={productId:event.detail.id, account:userInfo.username()};
+		      			app.webQuery(app.getproductdetail_url,params,onSuccess,onError,1);
+		      		}	
+		    		});
+
+				var marketPicker = new $.PopPicker();
+				marketPicker.setData(market);
+				var marketBtn = doc.getElementById('market');
+				marketBtn.addEventListener('tap', function(event) {
+					marketPicker.show(function(items) {
+						marketBtn.innerText = items[0].text;
+						marketBtn.value = items[0].value;;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+								
+				doc.getElementById('addProduct').addEventListener('tap',function(){
+					addProduct();
+				});
+				
+				doc.getElementById('submitBtn').addEventListener('tap',function(){
+					var market=app.getValue('market');
+					var productList=[];
+					var categoryList=document.querySelectorAll('.productCategory');
+					var priceList=document.querySelectorAll('.productPrice');
+					if(productId){
+						for (var i=0;i<priceList.length;i++) {
+							if(!priceList[i].value){
+								priceList[i].focus();
+								mui.toast(errorCode.EMPTY_PRODUCTPRICE);
+								return;
+							}
+						};
+					}else{
+						if(!market){
+							mui.toast(errorCode.EMPTY_MARKET);
+							return;
+						}
+					}
+					
+					for(var i=0;i<categoryList.length;i++){
+						if(categoryList[i].value && priceList[i].value){
+							productList.push({productCategory:categoryList[i].value,productPrice:priceList[i].value});
+						}
+					}
+					
+					if(productList.length==0){
+						mui.toast(errorCode.EMPTY_PRODUCTLIST);
+						return;
+					}
+
+					var params={account:userInfo.username(), productId:productId, market:market, productList:JSON.stringify(productList)};	
+					wd = plus.nativeUI.showWaiting("信息提交中，请等待...",{back:"none"});
+					app.webQuery(app.saveproductdetail_url, params,onSubmitSuccess,onSubmitError,1);
+				});
+			});
+		})(mui, document);
+    </script>
+</body>
+</html>

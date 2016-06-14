@@ -1,5 +1,5 @@
 (function($, owner) {
-	var BASE_URL='http://192.168.25.4/wuyuan-tech110/';
+	var BASE_URL='http://192.168.25.67/wuyuan-tech110/';
 	//var BASE_URL='http://192.168.3.34/wuyuan-tech110/';
 	owner.project_url = BASE_URL;
 	//owner.project_url = '';
@@ -11,7 +11,22 @@
 	
 	owner.getstudylist_url=BASE_URL+'server/getstudylist.php';
 	owner.getstudydetail_url=BASE_URL+'server/getstudydetail.php';
+	owner.getproductlist_url=BASE_URL+'server/getproductlist.php';
+	owner.getproductdetail_url=BASE_URL+'server/getproductdetail.php';
+	owner.saveproductdetail_url=BASE_URL+'server/getproductdetail.php';
+	owner.getdislist_url=BASE_URL+'server/getdislist.php';
+	owner.getdisdetail_url=BASE_URL+'server/getdisdetail.php';
+	owner.savedisdetail_url=BASE_URL+'server/getdisdetail.php';
+	owner.getcaplist_url=BASE_URL+'server/getcaplist.php';
+	owner.getcapdetail_url=BASE_URL+'server/getcapdetail.php';
+	owner.savecapdetail_url=BASE_URL+'server/getcapdetail.php';
+	owner.getbrelist_url=BASE_URL+'server/getbrelist.php';
+	owner.getbredetail_url=BASE_URL+'server/getbredetail.php';
+	owner.savebredetail_url=BASE_URL+'server/getbredetail.php';
 	
+	owner.getplalist_url=BASE_URL+'server/getplalist.php';
+	owner.getpladetail_url=BASE_URL+'server/getpladetail.php';
+	owner.savepladetail_url=BASE_URL+'server/getpladetail.php';
 
 	owner.filedownload_url='';
 	owner.fileupload_url='';
@@ -35,19 +50,50 @@
 	};
 	
 	owner.getAttributeValue = function(id, attribute){
-		return document.getElementById(id).getAttribute(attribute);
+		var ele = document.getElementById(id);
+		if (ele)
+			return ele.getAttribute(attribute);
+		else
+			return '';
 	};
 	
 	owner.getValue = function(id){
-		return document.getElementById(id).value;
+		var ele=document.getElementById(id);
+		if(ele)
+			return ele.value;
+		else
+			return '';
 	};
 	
+	owner.getTextByCode = function(data, code, seperator){
+		if(!seperator)
+			seperator='';
+		return textFromCode(data, code, seperator);
+	}
+	
+	function textFromCode(data, code, seperator){
+		var text='';
+		for(var i=0;i<data.length;i++){
+			if(code.indexOf(data[i].value)>=0){
+				text=data[i].text;
+				if(data[i].children)
+					text+=(seperator+textFromCode(data[i].children,code,seperator));
+				break;
+			}
+		}
+		return text;
+	}
+	
 	owner.setAttributeValue = function(id, attribute, value){
-		document.getElementById(id).setAttribute(attribute,value);
+		var ele=document.getElementById(id);
+		if(ele)
+			ele.setAttribute(attribute,value);
 	};
 	
 	owner.setValue = function(id, value){
-		document.getElementById(id).value=value;
+		var ele=document.getElementById(id);
+		if(ele)
+			ele.value=value;
 	};
 	
 	owner.getValueByText = function(data, text){
@@ -67,17 +113,27 @@
 	};
 	
 	owner.setText = function(query, text){
-		document.querySelector(query).innerText=text;
+		var ele=document.querySelector(query);
+		if(ele)
+			ele.innerText=text;
 	};
 	
 	owner.setHTML = function(query, html){
-		document.querySelector(query).innerHTML=html;
+		var ele=document.querySelector(query);
+		if(ele)
+			ele.innerHTML=html;
 	};
 
 	owner.setElementVisiablity = function(query, visiable){
 		var ele=document.querySelector(query);
 		if(ele)
 			ele.style.display=visiable?'':'none';
+	};
+	
+	owner.removeAttribute = function(id, attribute){
+		var ele=document.getElementById(id);
+		if(ele.hasAttribute(attribute))
+			ele.removeAttribute(attribute);
 	};
 	
 	owner.toWindow = function(windowId, preAction , afterAction) {

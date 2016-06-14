@@ -74,7 +74,7 @@
 	        plus.storage.removeItem('usertype');
 	        return;
 	    }
-	    plus.storage.setItem('usertype', arguments[0]);
+	    plus.storage.setItem('usertype', arguments[0].toString());
 	};
 	
 	owner.userregion=function(){

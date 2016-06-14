@@ -3,6 +3,13 @@ body{
 	/*background-color: #FFF;*/
 }
 
+input[readonly],
+textarea[readonly],
+input[disabled],
+textarea[disabled]{
+	color: #8f8f94;
+}
+
 .mui-content{
 	/*background-color: transparent;*/
 }
@@ -55,6 +62,32 @@ body{
 	float:right;
 	width:25%;
 }
+
+.mui-input-row .rightContent{
+	color: #8f8f94;
+	display: block;
+    padding: 8px 0px;
+    float: left;
+    width: 65%;
+    line-height: 25px;
+}
+
+.mui-content-padded{
+	font-size: 14px;
+}
+
+.mui-content-padded h5{
+	margin:0;
+	line-height: 20px;
+}
+
+
+.mui-content-padded .mui-pull-right{
+	line-height: 20px;
+	padding:0;
+	cursor: pointer;
+}
+
 
 /*附件相关的样式*/
 .attachBlock .mui-row{
@@ -198,6 +231,24 @@ body{
 	margin-top: 15px;
 }
 
+/*页面底部新增按钮样式*/
+#addBtn{
+	position:fixed;
+	z-index: 2;
+	background-color: rgba(0,0,0,0.3);
+	bottom:10px;
+	left:10px;
+	padding:7px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+#addBtn .add{
+	font-weight:900;
+    font-size: 26px;
+    color:#fff;
+}
+
 /*刷新按钮的样式*/
 #refreshBtn{
 	position:fixed;
@@ -227,6 +278,24 @@ body{
             animation-play-state:running;
 }
 
+/*增加item的样式*/
+.item-group .mui-input-row{
+	margin-right:60px;
+}
+
+.item-group .delIcon{
+	color:red;
+	font-weight: bold;
+	position: absolute;
+    right: 15px;
+    top: 25px;
+    cursor: pointer;
+}
+
+.item-group .delIcon-disable{
+	color: gray;
+}
+
 /*study信息详情页的样式*/
 #infoForm{
 	margin-left:10px;
@@ -249,4 +318,20 @@ body{
 	max-width: 100%;
 }
 
+/*灾情统计页的样式*/
+.statue {
+	/*line-height: 43px;*/
+}
 
+.red {
+	color: #FF0000;
+}
+
+.green {
+	color: #0daa00;
+}
+
+.mui-table h4 {
+    line-height: 21px;
+    font-weight: 500;
+}

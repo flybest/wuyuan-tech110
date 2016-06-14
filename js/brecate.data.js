@@ -1,0 +1,33 @@
+var breCateData=[{
+		"value": "100",
+		"text": "猪",
+		"unit": "头",
+	}, {
+		"value": "200",
+		"text": "牛",
+		"unit": "头",
+	}, {
+		"value": "300",
+		"text": "羊",
+		"unit": "只",
+	}, {
+		"value": "400",
+		"text": "鸭",
+		"unit": "只",
+	}, {
+		"value": "500",
+		"text": "鸡",
+		"unit": "只",
+	}, {
+		"value": "600",
+		"text": "鹅",
+		"unit": "只",
+	}, {
+		"value": "700",
+		"text": "骆驼",
+		"unit": "匹",
+	}, {
+		"value": "800",
+		"text": "马",
+		"unit": "匹",
+	}];

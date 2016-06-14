@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>科技110-种植技术-list</title>
+    <title>科技110-种植统计-list</title>
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../css/app.css"/>
 </head>
@@ -15,33 +15,26 @@
 			<div class="mui-scroll">
 				<!--数据列表-->
 				<ul class="mui-table-view">
-					<!--<li class="mui-table-view-cell mui-media">
-						<a href="javascript:;">
-							<img class="mui-media-object mui-pull-left" src="../images/yuantiao.jpg">
-							<div class="mui-media-body">
-								远眺
-								<p class='mui-ellipsis'>静静的看这个世界，最后终于疯了</p>
-							</div>
-						</a>
-					</li>
-					<li class="mui-table-view-cell mui-media">
-						<a href="javascript:;">
-							<img class="mui-media-object mui-pull-left" src="../images/yuantiao.jpg">
-							<div class="mui-media-body">
-								远眺
-								<p class='mui-ellipsis'>静静的看这个世界，最后终于疯了</p>
-							</div>
-						</a>
-					</li>-->
+					<!--<li class="mui-table-view-cell">
+			            <div class="mui-table">
+			                <div class="mui-table-cell mui-col-xs-10">
+			                    <h4 class="mui-ellipsis-2 titleSpan">隆昌镇种植小麦1500亩</h4>
+			                    <p class="mui-h6 mui-pull-left">2016-03-12</p>
+			                    <p class="mui-h6 mui-pull-right">意向种植</p>
+			                </div>
+			            </div>
+			       </li>-->
 				</ul>
 			</div>
 		</div>
+		<a id="addBtn"><span class="mui-icon mui-icon-plusempty add"></span></a>
 		<a id="refreshBtn"><span class="mui-icon mui-icon-loop refresh"></span></a>
 	</div>
 	<script type="text/javascript" src="../../js/mui.min.js"></script>
 	<script type="text/javascript" src="../../js/app.js" ></script>
-	<script type="text/javascript" src="../../js/userinfo.js" ></script>
 	<script type="text/javascript" src="../../js/errorcode.js" ></script>
+	<script type="text/javascript" src="../../js/userinfo.js" ></script>
+	<script type="text/javascript" src="../../js/platype.data.js" ></script>
 	<script type="text/javascript" charset="UTF-8">
 		var keyword='';
 		
@@ -62,15 +55,16 @@
 			try{
 				for (var i = 0; i < data.respondCount; i++) {
 					var li = document.createElement('li');
-					var img=data.info[i].img?'<img class="mui-media-object mui-pull-left" src="'+ data.info[i].img +'">':'';
-					li.className = 'mui-table-view-cell mui-media';
-					li.innerHTML = '<a id="'+ data.info[i].infoId +'">'+img+'<div class="mui-ellipsis mui-media-body"><span class="titleSpan">'+data.info[i].infoTitle+'</span><p class="mui-ellipsis">'+data.info[i].publishDate+'</p></div></a>';
+					li.className = 'mui-table-view-cell';
+					li.innerHTML ='<div id="'+ data.pla[i].plaId +'" class="mui-table"><div class="mui-table-cell mui-col-xs-10">'
+						+'<h4 class="mui-ellipsis-2 titleSpan">'+ data.pla[i].plaTitle +'</h4><p class="mui-h6 mui-pull-left">'+ data.pla[i].publishDate +'</p>'
+			        		+'<p class="mui-h6 mui-pull-right">'+ app.getTextByValue(plaTypeDate, data.pla[i].plaType) +'</p></div></div>';
 					table.appendChild(li);
-					document.getElementById(data.info[i].infoId).addEventListener('tap',function(){
+					document.getElementById(data.pla[i].plaId).addEventListener('tap',function(){
 						//这里打开详情窗口显示信息
-						var detailPage = plus.webview.getWebviewById('studydetail');
-						mui.fire(detailPage,'getDetail',{id:this.getAttribute('id'),type:1});
-						mui.openWindow({id:'studydetail'});
+						var detailPage = plus.webview.getWebviewById('plantstatisticdetail');
+						mui.fire(detailPage,'getDetail',{id:this.getAttribute('id')});
+						mui.openWindow({id:'plantstatisticdetail'});
 					});
 				} 
 			}catch(e){
@@ -90,8 +84,8 @@
 			    case 'FAILED_NETWORK':
 			        err=errorCode.FAILED_NETWORK;
 			        break;
-		        case 'EMPTY_INFO':
-			        err=errorCode.EMPTY_INFO;
+		        case 'EMPTY_PLANTSTATISTIC':
+			        err=errorCode.EMPTY_PLANTSTATISTIC;
 			        break;
 			    default:
 			        err=errorCode.FAILED_LOADED;
@@ -102,8 +96,8 @@
  
 		function pullupRefresh() {
 			document.querySelector('.refresh').className='mui-icon mui-icon-loop refresh refreshstart';
-			var params = {account:userInfo.username(), keyword:keyword, infoType:1};
-			app.webQuery(app.getstudylist_url, params, onUpSuccess, onUpError, 1);
+			var params = {account:userInfo.username(), keyword:keyword};
+			app.webQuery(app.getplalist_url, params, onUpSuccess, onUpError, 1);
 		};
 
       	(function($, doc) {
@@ -119,17 +113,21 @@
 			});
 			
 			$.plusReady(function() {
+				
 				document.getElementById('refreshBtn').addEventListener('tap',function(){
 					keyword='';
 					mui('#contentPullrefresh').pullRefresh().pullupLoading();
 				});
 				
+				document.getElementById('addBtn').addEventListener('tap',function(){
+					var detailPage = plus.webview.getWebviewById('plantstatisticdetail');
+					mui.fire(detailPage,'getDetail',{id:''});
+					mui.openWindow({id:'plantstatisticdetail'});
+				});
+				
 				setTimeout(function() {
 					mui('#contentPullrefresh').pullRefresh().pullupLoading();
 				}, 500);
-				
-				window.addEventListener('startGetData',function(){
-				});
 			});
 		})(mui, document);
 

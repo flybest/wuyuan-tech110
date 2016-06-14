@@ -4,7 +4,8 @@ header("Access-Control-Allow-Methods: POST, GET");
 header("Access-Control-Allow-Headers: x-requested-with");
 //echo "{err:'ok',token:'token123456'}";
 
-
-$result = array('err' => 'ok', 'token' => 'token123456', 'realname' => '张三', 'usertype' => 3, 'avatarurl' => 'http://'.$_SERVER['HTTP_HOST'].'/wuyuan-prevetion/server/img/muwu.jpg', 'tel' => '13811100098');
+$product1 = array('productId'=>'a'.rand(100000,999999), 'productCategory'=>'苹果', 'productPrice'=>'4.50');
+$productArray = array($product1);
+$result = array('err' => 'ok', 'market' =>'1','product'=>$productArray);
 echo json_encode($result);
 ?>

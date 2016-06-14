@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>科技110-价格统计-市场价格</title>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css"/>
+	<link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+</head>
+<body>
+	<header id="navtitle" class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-action-back mui-icon-left-nav mui-pull-left" ></a>
+		<h1  class="mui-title adp-title">市场价格</h1>
+		<a id="uploadPrice" class="mui-icon mui-icon-plusempty mui-icon-right-nav mui-pull-right"></a>
+	</header>
+	<div class="mui-content workForm">
+		<div id="landSearchPart" class="mui-input-group workBlock">
+			<div class="mui-input-row">
+				<label>市场</label>
+				<button id='market' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择市场</button>
+			</div>
+			<div class="mui-input-row">
+				<label>品种</label>
+				<button id='category' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择品种</button>
+			</div>
+		</div>
+		<button id='searchBtn' class="mui-btn mui-btn-success" style="width:100%;">查询</button>
+		<div class="mui-content-padded" style="height:20px; padding: 0 20px;">
+			<h5 class="mui-pull-left">品种</h5>
+			<h5 class="mui-pull-right">价格</h5>
+		</div>
+		<div class="mui-card" style="margin-bottom: 20px;">
+			<ul class="mui-table-view">
+				<!--<li class="mui-table-view-cell">
+					<span class="productCategory">黄瓜</span>
+					<span class="productPrice mui-pull-right">1.00 元</span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span class="productCategory">苹果</span>
+					<span class="productPrice mui-pull-right">5.00 元</span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span class="productCategory">梨</span>
+					<span class="productPrice mui-pull-right">6.00 元</span>
+				</li>-->
+			</ul>
+		</div>
+
+	</div>
+	<script type="text/javascript" src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/mui.picker.min.js"></script>
+	<script type="text/javascript" src="../../js/app.js" ></script>
+	<script type="text/javascript" src="../../js/userinfo.js" ></script>
+	<script type="text/javascript" src="../../js/errorcode.js" ></script>
+	<script type="text/javascript" src="../../js/market.data.js" ></script>
+	<script type="text/javascript" src="../../js/plantcategory.data.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+	 	var wd, market, category;
+	 	
+	 	var clearList = function(){
+			var table = document.body.querySelector('.mui-table-view');
+			while(table.hasChildNodes()) 
+				table.removeChild(table.firstChild);	
+			return table;
+		};
+	 	
+		/*初始化页面控件，全部清空*/
+		var initForm = function(){ 
+			app.setElementVisiablity('#uploadPrice',true);
+			
+			app.setText('#market','请选择市场');
+			app.setValue('market','');
+			app.setText('#category','请选择品种');
+			app.setValue('category','');
+			
+			clearList();
+		}; 
+
+		var onSuccess = function(data){
+			//处理DOM对象，显示信息内容
+			try{
+				var table = clearList();
+				for (var i = 0; i < data.respondCount; i++) {
+					var li = document.createElement('li');
+					li.className = 'mui-table-view-cell';
+					li.innerHTML = '<span class="productCategory">'+ data.product[i].productCategory +'</span>'
+					table.appendChild(li);
+					if(data.product[i].needFix){
+						li.innerHTML+='<button id="'+ data.product[i].productId +'" type="button" class="mui-btn mui-btn-primary">重报</button>';
+						document.getElementById(data.product[i].productId).addEventListener('tap',function(){
+							//这里打开详情窗口显示信息
+							var detailPage = plus.webview.getWebviewById('priceupload');
+							mui.fire(detailPage,'upgradePrice',{id:this.getAttribute('id')});
+							mui.openWindow({id:'priceupload'});
+						});
+					}else{
+						li.innerHTML+='<span class="productPrice mui-pull-right">'+data.product[i].productPrice+' 元</span>';
+					}
+				} 
+			}catch(e){
+				console.log(e.message);
+			    mui.toast(errorCode.BAD_DATA);
+			}
+			wd.close();
+		};
+		
+		var onError = function(errcode){
+			wd.close(); // 失败，先关闭等待的对话框  
+			switch(errcode){
+			    case 'FAILED_NETWORK':
+			        mui.toast(errorCode.FAILED_NETWORK);
+			        break;
+			    case 'EMPTY_INFO':
+			    		mui.toast(errorCode.EMPTY_INFO);
+			        break;
+			    default:
+			        mui.toast(errorCode.UNKNOW_ERROR);
+		   };
+		};
+		
+		var reloadList = function(){
+			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
+			var params = {account:userInfo.username(), market:market, category:category};
+			app.webQuery(app.getproductlist_url, params, onSuccess, onError, 1);
+		};
+
+		(function($, doc) {
+			$.init({
+				preloadPages:[{
+					"id": "priceupload",
+					"url":app.project_url+"work/pricestatistic/priceupload.html"
+				}]
+			});
+			
+			$.plusReady(function() {
+				window.addEventListener('reloadList',function(){
+					reloadList();
+				});
+				
+				initForm();
+				
+				if(userInfo.usertype()!=3){
+					app.setElementVisiablity('#uploadPrice',false);
+				}
+
+				var marketPicker = new $.PopPicker();
+				marketPicker.setData(marketData);
+				var marketBtn = doc.getElementById('market');
+				marketBtn.addEventListener('tap', function(event) {
+					marketPicker.show(function(items) {
+						marketBtn.innerText = items[0].text;
+						marketBtn.value = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+				
+				var categoryPicker = new $.PopPicker();
+				categoryPicker.setData(plantCategoryData);
+				var categoryBtn = doc.getElementById('category');
+				categoryBtn.addEventListener('tap', function(event) {
+					categoryPicker.show(function(items) {
+						categoryBtn.innerText = items[0].text;
+						categoryBtn.value = items[0].value;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+				
+				doc.getElementById('uploadPrice').addEventListener('tap',function(){
+					var detailPage = plus.webview.getWebviewById('priceupload');
+					mui.fire(detailPage,'upgradePrice',{id:''});
+					mui.openWindow({id:'priceupload'});
+				});
+				
+				doc.getElementById('searchBtn').addEventListener('tap',function(){
+					market=app.getValue('market');
+					category=app.getValue('category');
+					
+					if(!market){
+						$.toast(errorCode.EMPTY_MARKET);
+						return;
+					}
+					
+//					if(!category){
+//						$.toast(errorCode.EMPTY_PLANTCATEGORY);
+//						return;
+//					}
+			      	reloadList();
+				});
+			});
+		})(mui, document);
+    </script>
+</body>
+</html>

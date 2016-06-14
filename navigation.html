@@ -53,12 +53,6 @@
             		</a>
             </li>
             <li class="mui-table-view-cell mui-media mui-col-xs-4">
-            		<a data-page="disasterstatistic">
-	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
-	                <div class="mui-media-body">灾情统计</div>
-            		</a>
-            </li>
-            <li class="mui-table-view-cell mui-media mui-col-xs-4">
             		<a data-page="capitalstatistic">
 	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
 	                <div class="mui-media-body">农资统计</div>
@@ -68,6 +62,12 @@
             		<a data-page="pricestatistic">
 	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
 	                <div class="mui-media-body">价格统计</div>
+            		</a>
+            </li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4">
+            		<a data-page="disasterstatistic">
+	                <span class=""><img src="img/manageinfo.png" width="50" height="50" /> </span>
+	                <div class="mui-media-body">灾情统计</div>
             		</a>
             </li>
             <li class="mui-table-view-cell mui-media mui-col-xs-4">
@@ -112,7 +112,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"techguide":{
 				url: app.project_url+'work/techguide/techguidesearch.html',
@@ -126,7 +126,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"plantstatistic":{
 				url: app.project_url+'work/plantstatistic/plantstatisticsearch.html',
@@ -140,7 +140,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"breedstatistic":{
 				url: app.project_url+'work/breedstatistic/breedstatisticsearch.html',
@@ -154,21 +154,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
-			},
-			"disasterstatistic":{
-				url: app.project_url+'work/disasterstatistic/disasterstatisticsearch.html',
-				id: 'disasterstatistic',
-				subpages:[{
-					"id":"disasterstatisticsearchlist",
-					"url" : app.project_url+"work/disasterstatistic/disasterstatisticsearchlist.html",
-					"styles":{
-						"top":"44px",
-						"bottom":"0px"
-					}
-				}],
-				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"capitalstatistic":{
 				url: app.project_url+'work/capitalstatistic/capitalstatisticsearch.html',
@@ -182,21 +168,27 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"pricestatistic":{
-				url: app.project_url+'work/pricestatistic/pricestatisticsearch.html',
+				url: app.project_url+'work/pricestatistic/priceview.html',
 				id: 'pricestatistic',
+				show: {aniShow: 'pop-in'},
+				waiting: {autoShow: true}	
+			},
+			"disasterstatistic":{
+				url: app.project_url+'work/disasterstatistic/disasterstatisticsearch.html',
+				id: 'disasterstatistic',
 				subpages:[{
-					"id":"pricestatisticsearchlist",
-					"url" : app.project_url+"work/pricestatistic/pricestatisticsearchlist.html",
+					"id":"disasterstatisticsearchlist",
+					"url" : app.project_url+"work/disasterstatistic/disasterstatisticsearchlist.html",
 					"styles":{
 						"top":"44px",
 						"bottom":"0px"
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"planttech":{
 				url: app.project_url+'work/study/planttechsearch.html',
@@ -210,7 +202,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"breedtech":{
 				url: app.project_url+'work/study/breedtechsearch.html',
@@ -224,7 +216,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"protectknowledge":{
 				url: app.project_url+'work/study/protectknowledgesearch.html',
@@ -238,7 +230,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			},
 			"showmethemoney":{
 				url: app.project_url+'work/study/showmethemoneysearch.html',
@@ -252,7 +244,7 @@
 					}
 				}],
 				show: {aniShow: 'pop-in'},
-				waiting: {autoShow: false}	
+				waiting: {autoShow: true}	
 			}
 		};
 	
@@ -262,10 +254,20 @@
 					"id": "setting",
 					"url":app.project_url+"setting.html"
 				}],
+				preloadLimit:100,
 				statusBarBackground: '#4a82d1' 
 			});
 			
 			$.plusReady(function(){
+//				for (s in urlList) {
+//					try{
+//						$.preload(urlList[s]);
+//					}catch(e){
+//						console.log(e.message);
+//						continue;
+//					}
+//				}
+
 				$("body").on('tap','a',function(e){
 					var pageId = this.getAttribute("data-page");
 					var view=plus.webview.getWebviewById(pageId);
