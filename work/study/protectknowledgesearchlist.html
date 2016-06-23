@@ -69,7 +69,7 @@
 					document.getElementById(data.info[i].infoId).addEventListener('tap',function(){
 						//这里打开详情窗口显示信息
 						var detailPage = plus.webview.getWebviewById('studydetail');
-						mui.fire(detailPage,'getDetail',{id:this.getAttribute('id'),type:1});
+						mui.fire(detailPage,'getDetail',{id:this.getAttribute('id'),type:3});
 						mui.openWindow({id:'studydetail'});
 					});
 				} 
@@ -102,7 +102,7 @@
  
 		function pullupRefresh() {
 			document.querySelector('.refresh').className='mui-icon mui-icon-loop refresh refreshstart';
-			var params = {account:userInfo.username(), keyword:keyword, infoType:1};
+			var params = {account:userInfo.username(), keyword:keyword, infoType:3};
 			app.webQuery(app.getstudylist_url, params, onUpSuccess, onUpError, 1);
 		};
 

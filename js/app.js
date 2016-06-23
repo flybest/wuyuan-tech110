@@ -1,5 +1,5 @@
 (function($, owner) {
-	var BASE_URL='http://192.168.25.67/wuyuan-tech110/';
+	var BASE_URL='http://192.168.25.81/wuyuan-tech110/';
 	//var BASE_URL='http://192.168.3.34/wuyuan-tech110/';
 	owner.project_url = BASE_URL;
 	//owner.project_url = '';
@@ -11,15 +11,19 @@
 	
 	owner.getstudylist_url=BASE_URL+'server/getstudylist.php';
 	owner.getstudydetail_url=BASE_URL+'server/getstudydetail.php';
+	
 	owner.getproductlist_url=BASE_URL+'server/getproductlist.php';
 	owner.getproductdetail_url=BASE_URL+'server/getproductdetail.php';
 	owner.saveproductdetail_url=BASE_URL+'server/getproductdetail.php';
+	
 	owner.getdislist_url=BASE_URL+'server/getdislist.php';
 	owner.getdisdetail_url=BASE_URL+'server/getdisdetail.php';
 	owner.savedisdetail_url=BASE_URL+'server/getdisdetail.php';
+	
 	owner.getcaplist_url=BASE_URL+'server/getcaplist.php';
 	owner.getcapdetail_url=BASE_URL+'server/getcapdetail.php';
 	owner.savecapdetail_url=BASE_URL+'server/getcapdetail.php';
+	
 	owner.getbrelist_url=BASE_URL+'server/getbrelist.php';
 	owner.getbredetail_url=BASE_URL+'server/getbredetail.php';
 	owner.savebredetail_url=BASE_URL+'server/getbredetail.php';
@@ -27,6 +31,16 @@
 	owner.getplalist_url=BASE_URL+'server/getplalist.php';
 	owner.getpladetail_url=BASE_URL+'server/getpladetail.php';
 	owner.savepladetail_url=BASE_URL+'server/getpladetail.php';
+	
+	owner.getteglist_url=BASE_URL+'server/getteglist.php';
+	owner.delteg_url=BASE_URL+'server/getteglist.php';
+	owner.gettegdetail_url=BASE_URL+'server/gettegdetail.php';
+	owner.savetegdetail_url=BASE_URL+'server/gettegdetail.php';
+	
+	owner.getteqalist_url=BASE_URL+'server/getteqalist.php';
+	owner.delteqa_url=BASE_URL+'server/getteqalist.php';
+	owner.getteqadetail_url=BASE_URL+'server/getteqadetail.php';
+	owner.saveteqadetail_url=BASE_URL+'server/getteqadetail.php';
 
 	owner.filedownload_url='';
 	owner.fileupload_url='';
@@ -98,7 +112,7 @@
 	
 	owner.getValueByText = function(data, text){
 		for (var i=0;i<data.length;i++) {
-			if(data[i].text===text)
+			if(data[i].text==text)
 				return data[i].value;
 		}
 		return "";
@@ -106,7 +120,7 @@
 	
 	owner.getTextByValue = function(data, value){
 		for (var i=0;i<data.length;i++) {
-			if(data[i].value===value)
+			if(data[i].value==value)
 				return data[i].text;
 		}
 		return "";

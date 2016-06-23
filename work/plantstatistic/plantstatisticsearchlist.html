@@ -58,7 +58,7 @@
 					li.className = 'mui-table-view-cell';
 					li.innerHTML ='<div id="'+ data.pla[i].plaId +'" class="mui-table"><div class="mui-table-cell mui-col-xs-10">'
 						+'<h4 class="mui-ellipsis-2 titleSpan">'+ data.pla[i].plaTitle +'</h4><p class="mui-h6 mui-pull-left">'+ data.pla[i].publishDate +'</p>'
-			        		+'<p class="mui-h6 mui-pull-right">'+ app.getTextByValue(plaTypeDate, data.pla[i].plaType) +'</p></div></div>';
+			        		+'<p class="mui-h6 mui-pull-right">'+ app.getTextByValue(plaTypeData, data.pla[i].plaType) +'</p></div></div>';
 					table.appendChild(li);
 					document.getElementById(data.pla[i].plaId).addEventListener('tap',function(){
 						//这里打开详情窗口显示信息

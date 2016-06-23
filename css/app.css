@@ -10,12 +10,16 @@ textarea[disabled]{
 	color: #8f8f94;
 }
 
+textarea{
+	margin-bottom: 0;
+}
+
 .mui-content{
 	/*background-color: transparent;*/
 }
 
 .mui-btn-block{
-	margin-top:20px;
+	margin-top:10px;
 	padding:8px 0;
 }
 

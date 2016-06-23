@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>科技110-农技答疑-detail</title>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+	</head>
+	<body> 
+		<header id="navtitle" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title adp-title">农技提问</h1>
+		</header>
+		<div id="infoForm" class="mui-content workForm">
+			<div class="info-header">
+				<div class="mui-row">
+					<div class="mui-col-xs-12">
+						<h3 id="teqTitle" class="mui-ellipsis">{{qtitle}}</h3>
+					</div>
+				</div>
+				<div class="mui-row">
+					<div id="teqAuthor" class="mui-col-xs-4">{{qauthor}}</div>
+					<div id="teqDate" class="mui-col-xs-5">{{qdate}}</div>
+				</div>
+			</div>
+			<div id="teqFullContent" class="info-content">
+				{{qfullcontent}}
+			</div>
+			<div id="answer-input">
+				<div class="mui-content-padded" class="workBlock" style="height:20px;">
+					<h5 class="mui-pull-left"><span class="redFont">*</span>解答：</h5>
+				</div>	
+				<div class="mui-input-row" >
+					<textarea id="teaContent-input" rows="5" placeholder="请输入解答"></textarea>
+				</div>
+				<div class="mui-row">
+					<div class="mui-col-xs-1"></div>
+					<div class="mui-col-xs-4">
+						<button id='submitBtn' class="mui-btn mui-btn-block mui-btn-success">提交</button>
+					</div>
+					<div class="mui-col-xs-2"></div>
+					<div class="mui-col-xs-4">
+						<button id='saveBtn' class="mui-btn mui-btn-block mui-btn-primary">保存</button>
+					</div>
+					<div class="mui-col-xs-1"></div>
+				</div>
+			</div>
+			<div id="answer">
+				<div class="info-header"></div>
+				<div id="teaContent" class="info-content">
+					{{acontent}}
+				</div>
+				<div class="mui-row">
+					<div id="teaAuthor" class="mui-col-xs-4">{{aauthor}}</div>
+					<div id="teaDate" class="mui-col-xs-5">{{adate}}</div>
+				</div>
+			</div>
+			
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/app.js" ></script>
+		<script type="text/javascript" src="../../js/errorcode.js" ></script>
+		<script type="text/javascript" src="../../js/userinfo.js" ></script>
+		<script>
+			var wd, infoId='';
+			var components=["teqTitle","teqAuthor","teqDate","teqFullContent","teaContent","teaAuthor","teaDate"]
+
+			var initForm = function(){
+				infoId='';
+				for(c in components){
+					try{
+						app.setHTML('#'+components[c],'');
+					}catch(e){
+						console.log(e.message);
+						continue;
+					};
+				};
+				app.setValue('teaContent-input','');
+				app.setElementVisiablity('#answer',false);
+				app.setElementVisiablity("#answer-input",false);
+			};
+
+			var onSuccess = function(data){
+				//处理DOM对象，显示信息内容
+				try{
+					for(c in components){
+						try{
+							app.setHTML('#'+components[c], data[components[c]]);
+						}catch(e){
+							console.log(e.message);
+							continue;
+						}
+					}
+					
+					if(data.teqStatue==5){
+						app.setElementVisiablity('#answer', true);
+					}else{
+						if(userInfo.usertype()==1){
+							if(data.teaStatue==2)
+								app.setValue('teaContent-input',data.teaContent);
+							app.setElementVisiablity('#answer-input', true);	
+						}
+					}
+				}catch(e){
+					console.log(e.message);
+				    mui.toast(errorCode.BAD_DATA);
+				}
+				wd.close();
+			};
+			
+			var onError = function(errcode){
+				wd.close(); // 失败，先关闭等待的对话框  
+				switch(errcode){
+				    case 'FAILED_NETWORK':
+				        mui.toast(errorCode.FAILED_NETWORK);
+				        break;
+				    case 'INVALID_INFO':
+				    		mui.toast(errorCode.INVALID_INFO);
+				        break;
+				    default:
+				        mui.toast(errorCode.UNKNOW_ERROR);
+			   };
+			};
+			
+			var onSubmitSuccess = function(data){
+				wd.close();
+				mui.toast('提交成功');
+				mui.back();
+			};
+		
+			var onSubmitError = function(errcode){
+				onError(errcode);
+			};
+			
+			var submitInfo = function(statue){
+				var params={account:userInfo.username(), teqaInfoId:infoId, teaStatue:statue};
+				var teaContent=app.getValue('teaContent-input');
+				if(statue!=1){
+					if(!teaContent){
+						mui.toast(errorCode.EMPTY_TEACONTENT);
+						return;
+					}
+				}
+				
+				params.teaContent=teaContent;
+				params.type='full';
+				wd = plus.nativeUI.showWaiting("信息提交中，请等待...",{back:"none"});
+      			app.webQuery(app.saveteqadetail_url,params,onSubmitSuccess,onSubmitError,1);
+			};
+			
+			(function($) {
+				$.init({});
+				$.plusReady(function(){
+					window.addEventListener('getDetail',function(event){
+			      		initForm();
+			      		if(event.detail.id){
+			      			infoId=event.detail.id;
+			      			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
+			      			var params={teqaInfoId:event.detail.id, type:'full'};
+			      			app.webQuery(app.getteqadetail_url,params,onSuccess,onError,1);
+			      		}	
+			    		});
+			    		
+			    		/*保存按钮响应*/
+					document.getElementById('submitBtn').addEventListener('tap',function(){
+						submitInfo(3);
+					});	
+					
+					document.getElementById('saveBtn').addEventListener('tap', function(){
+						submitInfo(2);
+					});
+
+				});
+			})(mui);
+		</script>
+	</body>
+</html>

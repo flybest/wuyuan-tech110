@@ -5,6 +5,6 @@ header("Access-Control-Allow-Headers: x-requested-with");
 //echo "{err:'ok',token:'token123456'}";
 
 
-$result = array('err' => 'ok', 'token' => 'token123456', 'realname' => '张三', 'usertype' => 3, 'avatarurl' => 'http://'.$_SERVER['HTTP_HOST'].'/wuyuan-prevetion/server/img/muwu.jpg', 'tel' => '13811100098');
+$result = array('err' => 'ok', 'token' => 'token123456', 'realname' => '张三', 'usertype' => 1, 'avatarurl' => 'http://'.$_SERVER['HTTP_HOST'].'/wuyuan-prevetion/server/img/muwu.jpg', 'tel' => '13811100098');
 echo json_encode($result);
 ?>

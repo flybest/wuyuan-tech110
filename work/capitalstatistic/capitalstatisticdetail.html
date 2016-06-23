@@ -131,7 +131,7 @@
 				        break;
 				    default:
 				        mui.toast(errorCode.UNKNOW_ERROR);
-			   };
+			  };
 			};
 			
 			var onSubmitSuccess = function(data){
@@ -187,7 +187,7 @@
 					/*保存按钮响应*/
 					doc.getElementById('submitBtn').addEventListener('tap',function(){
 						
-						var params={account:userInfo.username(), capInfoId:infoId};
+						var params={account:userInfo.username()};
 						var capRegion=app.getValue('capRegion');
 						var capType=app.getValue('capType');
 						var capCategory= app.getValue('capCategory');

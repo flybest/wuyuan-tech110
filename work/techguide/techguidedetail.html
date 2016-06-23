@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>科技110-农技指导-detail</title>
+		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+	</head>
+	<body> 
+		<header id="navtitle" class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title adp-title">农技指导</h1>
+		</header>
+		<div id="infoForm" class="mui-content workForm">
+			<div class="info-header">
+				<div class="mui-row">
+					<div class="mui-col-xs-12">
+						<h3 id="tegTitle" class="mui-ellipsis">{{title}}</h3>
+					</div>
+				</div>
+				<div class="mui-row">
+					<div id="tegAuthor" class="mui-col-xs-3">{{author}}</div>
+					<div id="tegCategory" class="mui-col-xs-4">{{category}}</div>
+					<div id="publishDate" class="mui-col-xs-5">{{date}}</div>
+				</div>
+			</div>
+			<div id="tegFullContent" class="info-content">
+				{{content}}
+			</div>
+		</div>
+		<script type="text/javascript" src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/app.js" ></script>
+		<script type="text/javascript" src="../../js/errorcode.js" ></script>
+		<script type="text/javascript" src="../../js/userinfo.js" ></script>
+		<script type="text/javascript" src="../../js/teginfocategory.data.js" ></script>
+		<script>
+			var wd, infoId='';
+			var components=["tegTitle","tegAuthor","tegCategory","publishDate","tegFullContent"]
+
+			var initForm = function(){
+				infoId='';
+				for(c in components){
+					try{
+						app.setHTML('#'+components[c],'');
+					}catch(e){
+						console.log(e.message);
+						continue;
+					};
+				};
+				
+				app.setHTML('#tegCategory','');
+			};
+
+			var onSuccess = function(data){
+				//处理DOM对象，显示信息内容
+				try{
+					for(c in components){
+						try{
+							app.setHTML('#'+components[c], data[components[c]]);
+						}catch(e){
+							console.log(e.message);
+							continue;
+						}
+					}
+					app.setHTML('#tegCategory', app.getTextByValue(tegInfoCategoryData,data.tegCategory));
+				}catch(e){
+					console.log(e.message);
+				    mui.toast(errorCode.BAD_DATA);
+				}
+				wd.close();
+			};
+			
+			var onError = function(errcode){
+				wd.close(); // 失败，先关闭等待的对话框  
+				switch(errcode){
+				    case 'FAILED_NETWORK':
+				        mui.toast(errorCode.FAILED_NETWORK);
+				        break;
+				    case 'INVALID_INFO':
+				    		mui.toast(errorCode.INVALID_INFO);
+				        break;
+				    default:
+				        mui.toast(errorCode.UNKNOW_ERROR);
+			   };
+			};
+
+			(function($) {
+				$.init({});
+				$.plusReady(function(){
+					window.addEventListener('getDetail',function(event){
+			      		initForm();
+			      		if(event.detail.id){
+			      			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
+			      			var params={tegInfoId:event.detail.id};
+			      			app.webQuery(app.gettegdetail_url,params,onSuccess,onError,1);
+			      		}	
+			    		});
+				});
+			})(mui);
+		</script>
+	</body>
+</html>

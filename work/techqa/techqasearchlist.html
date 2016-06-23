@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>科技110-农技答疑-list</title>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="contentPullrefresh" class="mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<ul class="mui-table-view">
+			       <!--<li class="mui-table-view-cell mui-media">
+				       	<div class="mui-slider-right mui-disabled">
+							<a class="mui-btn mui-btn-yellow">编辑</a>
+							<a class="mui-btn mui-btn-red">删除</a>
+							<a class="mui-btn mui-btn-purple">解答</a>
+						</div>
+						<div class="mui-slider-handle">
+							<span class=" mui-pull-right statue red">已删除</span> 
+							<div class="mui-ellipsis mui-media-body">
+								<span class="titleSpan">秋季大白菜干烧心病的整治非服务范围</span>
+								<p class='mui-ellipsis'>2016-04-25</p>
+							</div>
+						</div>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+		<a id="addBtn" style="display:none;"><span class="mui-icon mui-icon-plusempty add"></span></a>
+		<a id="refreshBtn"><span class="mui-icon mui-icon-loop refresh"></span></a>
+	</div>
+	<script type="text/javascript" src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/app.js" ></script>
+	<script type="text/javascript" src="../../js/errorcode.js" ></script>
+	<script type="text/javascript" src="../../js/teainfostatue.data.js" ></script>
+	<script type="text/javascript" src="../../js/teqinfostatue.data.js" ></script>
+	<script type="text/javascript" src="../../js/userinfo.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+		var keyword='';
+		var wd, userType;
+		
+		var startSearch = function(kw){
+			keyword=kw;
+			mui('#contentPullrefresh').pullRefresh().pullupLoading();
+		};
+		
+		var clearList = function(){
+			var table = document.body.querySelector('.mui-table-view');
+			while(table.hasChildNodes()) 
+				table.removeChild(table.firstChild);	
+			return table;
+		};
+		
+		var openWindow = function(id, infoId){
+			var detailPage = plus.webview.getWebviewById(id);
+			mui.fire(detailPage,'getDetail',{'id':infoId});
+			mui.openWindow({'id':id});
+		};
+		
+		var attachItemTapEvent = function(item, action){
+			function tapevent(){
+				mui.swipeoutClose(this.parentNode);
+				//这里打开详情窗口显示信息
+				openWindow('techqadetail', this.parentNode.id);
+			};
+			
+			if(action)
+				item.addEventListener('tap', tapevent);
+			else
+				item.removeEventListener('tap', tapevent);
+		};
+		
+		var addSwipeControl = function(container, editable){
+			function openEditor(){
+				var li=this.parentNode.parentNode;
+				var id=li.id;
+//				if(userType!=1)
+				openWindow('techqaeditor', id);
+//				else
+//					openWindow('techqadetail', id);
+				setTimeout(function() {
+					mui.swipeoutClose(li);
+				}, 0);
+			};			
+			
+			var div=document.createElement('div');
+			div.className="mui-slider-right mui-disabled";
+//			if(userType!=1){
+			div.innerHTML+='<a class="mui-btn mui-btn-yellow edit">编辑</a>';
+			div.innerHTML+='<a class="mui-btn mui-btn-red delete">删除</a>';
+//			}else{
+//				div.innerHTML+='<a class="mui-btn mui-btn-purple answer">解答</a>';
+//			}
+				
+			container.insertBefore(div,container.firstChild);
+			var edit=container.querySelector(".edit");
+			if(edit)
+				edit.addEventListener('tap', openEditor);
+			
+			var del=container.querySelector(".delete");
+			if(del)
+				del.addEventListener('tap',function(){
+					var btnArray = ['确认', '取消'];
+					var li=this.parentNode.parentNode;
+					var id=li.id;
+					mui.confirm('确认删除该条记录？', '提示', btnArray, function(e) {
+						if (e.index == 0) {
+							wd = plus.nativeUI.showWaiting("删除信息中，请等待...",{back:"none"});
+				      		var params={teqaInfoId:id, account:userInfo.username()};
+				      		app.webQuery(app.delteqa_url,params,onDelSuccess,onDelError,1);
+						} else {
+							setTimeout(function() {
+								mui.swipeoutClose(li);
+							}, 0);
+						}
+					});
+				});
+			
+//			var answer=container.querySelector(".answer");
+//			if(answer)
+//				answer.addEventListener('tap',openEditor);
+		};
+		
+		var onDelSuccess = function(data){
+			wd.close();
+			mui.toast('删除成功，刷新列表');
+			mui('#contentPullrefresh').pullRefresh().pullupLoading();
+		};
+		
+		var onDelError = function(errcode){
+			wd.close();
+			switch(errcode){
+			    case 'FAILED_NETWORK':
+			        mui.toast(errorCode.FAILED_NETWORK);
+			        break;
+		        case 'INVALID_INFO':
+			        mui.toast(errorCode.INVALID_INFO);
+			        break;
+			    default:
+			        mui.toast(errorCode.FAILED_LOADED);
+		    }
+		};
+		
+		var onUpSuccess = function(data){
+			var table = clearList();
+			try{
+				for (var i = 0; i < data.respondCount; i++) {
+					var li = document.createElement('li');
+					li.className = 'mui-table-view-cell mui-media';
+					li.id=data.teqa[i].teqaId;
+					var statue,statueColor,statueCode;
+					if(userType==1){
+						statue=data.teqa[i].teaStatue;
+						statueCode=app.getTextByValue(teaInfoStatueData, data.teqa[i].teaStatue);
+						statueColor=(statue==3)?'green':(statue==1)?'red':'';
+					}else{
+						statue=data.teqa[i].teqStatue;
+						statueCode=app.getTextByValue(teqInfoStatueData, data.teqa[i].teqStatue);
+						statueColor=(statue==5)?'green':(statue==3)?'red':'';
+					}
+					li.innerHTML ='<div class="mui-slider-handle"><span class=" mui-pull-right statue '+ statueColor +'">'+ statueCode+'</span>' 
+						+'<div class="mui-ellipsis mui-media-body"><span class="titleSpan">'+data.teqa[i].teqTitle+'</span>'
+						+'<p class="mui-ellipsis">'+ data.teqa[i].teqDate +'</p></div></div>';
+					table.appendChild(li);
+//					if((userType==1 && (statue==1 || statue==2)) || (userType!=1 && statue==1 && userInfo.username() == data.teqa[i].teqUsername))
+//						addSwipeControl(li);
+						
+					if(userType!=1 && statue==1 && userInfo.username() == data.teqa[i].teqUsername)
+						addSwipeControl(li);
+					attachItemTapEvent(li.querySelector('.mui-slider-handle'), true);
+				} 
+			}catch(e){
+				console.log(e.message);
+				mui.toast(errorCode.BAD_DATA);
+			}
+			
+			mui('#contentPullrefresh').pullRefresh().endPullupToRefresh(true);
+			document.querySelector('.refresh').className='mui-icon mui-icon-loop refresh';
+		};
+		 
+		var onUpError = function(errcode){
+		    document.querySelector('.refresh').className='mui-icon mui-icon-loop refresh';
+		    
+		    var err="";
+		    switch(errcode){
+			    case 'FAILED_NETWORK':
+			        err=errorCode.FAILED_NETWORK;
+			        break;
+		        case 'EMPTY_TECHQA':
+			        err=errorCode.EMPTY_TECHQA;
+			        break;
+			    default:
+			        err=errorCode.FAILED_LOADED;
+		    }
+		    mui('#contentPullrefresh').pullRefresh().endPullupToRefresh(true);
+		    	mui.toast(err);
+		}; 
+ 
+		function pullupRefresh() {
+			document.querySelector('.refresh').className='mui-icon mui-icon-loop refresh refreshstart';
+			var params = {account:userInfo.username(), keyword:keyword, usertype:userInfo.usertype()};
+			app.webQuery(app.getteqalist_url, params, onUpSuccess, onUpError, 1);
+		};
+
+      	(function($, doc) {
+			$.init({
+				pullRefresh : {
+					container:'#contentPullrefresh',//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up : {
+						contentrefresh : '正在加载...',//可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore : '没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback : pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				} 
+			});
+			
+			$.plusReady(function() {
+				userType=userInfo.usertype();
+				if(userType!=1)
+					app.setElementVisiablity('#addBtn',true);
+				
+				document.getElementById('refreshBtn').addEventListener('tap',function(){
+					keyword='';
+					mui('#contentPullrefresh').pullRefresh().pullupLoading();
+				});
+				
+				document.getElementById('addBtn').addEventListener('tap',function(){
+					var detailPage = plus.webview.getWebviewById('techqaeditor');
+					mui.fire(detailPage,'getDetail',{id:''});
+					mui.openWindow({id:'techqaeditor'});
+				});
+				
+				setTimeout(function() {
+					mui('#contentPullrefresh').pullRefresh().pullupLoading();
+				}, 500);
+			});
+		})(mui, document);
+
+    </script>
+</body>
+</html>

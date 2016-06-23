@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<title>科技110-养殖统计-detail</title>
+		<title>科技110-种植统计-detail</title>
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
@@ -13,28 +13,33 @@
 	<body>
 		<header id="navtitle" class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title adp-title">养殖上报</h1>
+			<h1 class="mui-title adp-title">种植上报</h1>
 		</header>
 		<div class="mui-content workForm">
 			<div id="infoPart" class="mui-input-group workBlock">
 				<div class="mui-input-row">
 					<label>所在地<span class="redFont">*</span></label>
-					<button id='breRegion' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择所在地</button>
-					<span id="breRegion-span" class="rightContent" style="display:none;"></span>
+					<button id='plaRegion' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择所在地</button>
+					<span id="plaRegion-span" class="rightContent" style="display:none;"></span>
 				</div>
 				<div class="mui-input-row">
-					<label>种类<span class="redFont">*</span></label>
-					<button id='breType' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择养殖种类</button>
-					<span id="breType-span" class="rightContent" style="display:none;"></span>
+					<label>作物品种<span class="redFont">*</span></label>
+					<button id='plaCategory' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择作物品种</button>
+					<span id="plaCategory-span" class="rightContent" style="display:none;"></span>
 				</div>
 				<div class="mui-input-row">
-					<label>数量<span class="redFont">*</span></label>
-					<input id="breCount" type="text" placeholder="请输入养殖数量" class='inputInMiddle'>
-					<label id="breCountUnit" class='labelOnRight'></label>
+					<label>种植面积<span class="redFont">*</span></label>
+					<input id="plaArea" type="text" placeholder="请输入种植面积" class='inputInMiddle'>
+					<label id="plaAreaUnit" class='labelOnRight'>亩</label>
+				</div>
+				<div class="mui-input-row">
+					<label>类别<span class="redFont">*</span></label>
+					<button id='plaType' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择种植类别</button>
+					<span id="plaType-span" class="rightContent" style="display:none;"></span>
 				</div>
 				<div class="mui-input-row">
 					<label>备注</label>
-					<input id="breComment" type="text" placeholder="请输入备注信息">
+					<input id="plaComment" type="text" placeholder="请输入备注信息">
 				</div>
 				<div id='publishDateRow' class="mui-input-row">
 					<label>上报时间</label>
@@ -49,10 +54,11 @@
 		<script type="text/javascript" src="../../js/app.js" ></script>
 		<script type="text/javascript" src="../../js/errorcode.js" ></script>
 		<script type="text/javascript" src="../../js/city.data.js" ></script>
-		<script type="text/javascript" src="../../js/bretype.data.js" ></script>
+		<script type="text/javascript" src="../../js/platype.data.js" ></script>
+		<script type="text/javascript" src="../../js/placate.data.js" ></script>
 		<script type="text/javascript" src="../../js/userinfo.js" ></script>
 		<script>
-			var fixedSpan=['breRegion-span','breType-span'];
+			var fixedSpan=['plaRegion-span','plaCategory-span','plaType-span'];
 			var wd, infoId='';
 			
 			var setSpanVisiable = function(isShow){
@@ -61,22 +67,16 @@
 					document.getElementById(element.split('-')[0]).style.display=isShow?'none':'';
 				});
 			};
-			
-			var getUnitByValue = function(data, value){
-				for (var i=0;i<data.length;i++) {
-					if(value.indexOf(data[i].value)>=0)
-						return data[i].unit;
-				}
-				return "";
-			};
 		
 			/*初始化页面控件，全部清空*/
 			var initForm = function(){ 
 				infoId='';
-				app.setHTML('#breRegion', '请选择所在地');
-				app.setValue('breRegion', '');
-				app.setHTML('#breType', '请选择养殖种类');
-				app.setValue('breType', '');
+				app.setHTML('#plaRegion', '请选择所在地');
+				app.setValue('plaRegion', '');
+				app.setHTML('#plaCategory', '请选择作物品种');
+				app.setValue('plaCategory', '');
+				app.setHTML('#plaType', '请选择种植类别');
+				app.setValue('plaType', '');
 				
 				mui('input').each(function(i,obj){
 					obj.value='';
@@ -104,9 +104,9 @@
 						obj.innerText=data[obj.getAttribute('id')];
 					});
 
-					app.setText('#breRegion-span',app.getTextByCode(cityData,data.breRegion));
-					app.setText('#breType-span',app.getTextByCode(breTypeData,data.breType,''));
-					app.setText('#breCountUnit', getUnitByValue(breTypeData,data.breType));
+					app.setText('#plaRegion-span',app.getTextByCode(cityData,data.plaRegion));
+					app.setText('#plaType-span',app.getTextByValue(plaTypeData,data.plaType));
+					app.setText('#plaCategory-span', app.getTextByValue(plaCateData,data.plaCategory));
 					
 					setSpanVisiable(true);
 					app.setElementVisiablity('#publishDateRow',true);
@@ -144,27 +144,39 @@
 				$.init({});
 				$.plusReady(function() {
 					//选择所在地
-					var breRegionPicker = new $.PopPicker({layer:2});
-					breRegionPicker.setData(cityData);
-					var breRegionBtn = doc.getElementById('breRegion');
-					breRegionBtn.addEventListener('tap', function(event) {
-						breRegionPicker.show(function(items) {
-							breRegionBtn.innerText = items[0].text+items[1].text;
-							breRegionBtn.value = items[1].value;
+					var plaRegionPicker = new $.PopPicker({layer:2});
+					plaRegionPicker.setData(cityData);
+					var plaRegionBtn = doc.getElementById('plaRegion');
+					plaRegionBtn.addEventListener('tap', function(event) {
+						plaRegionPicker.show(function(items) {
+							plaRegionBtn.innerText = items[0].text+items[1].text;
+							plaRegionBtn.value = items[1].value;
 							//返回 false 可以阻止选择框的关闭
 							//return false;
 						});
 					}, false);
 					
-					//选择灾害类型
-					var breTypePicker = new $.PopPicker();
-					breTypePicker.setData(breTypeData);
-					var breTypeBtn = doc.getElementById('breType');
-					breTypeBtn.addEventListener('tap', function(event) {
-						breTypePicker.show(function(items) {
-							breTypeBtn.innerText = items[0].text;
-							breTypeBtn.value = items[0].value;
-							app.setText('#breCountUnit', items[0].unit);
+					//选择作物品种
+					var plaCategoryPicker = new $.PopPicker();
+					plaCategoryPicker.setData(plaCateData);
+					var plaCategoryBtn = doc.getElementById('plaCategory');
+					plaCategoryBtn.addEventListener('tap', function(event) {
+						plaCategoryPicker.show(function(items) {
+							plaCategoryBtn.innerText = items[0].text;
+							plaCategoryBtn.value = items[0].value;
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					}, false);
+					
+					//选择种植类别
+					var plaTypePicker = new $.PopPicker();
+					plaTypePicker.setData(plaTypeData);
+					var plaTypeBtn = doc.getElementById('plaType');
+					plaTypeBtn.addEventListener('tap', function(event) {
+						plaTypePicker.show(function(items) {
+							plaTypeBtn.innerText = items[0].text;
+							plaTypeBtn.value = items[0].value;
 							//返回 false 可以阻止选择框的关闭
 							//return false;
 						});
@@ -175,37 +187,44 @@
 			      		if(event.detail.id){
 			      			infoId=event.detail.id;
 			      			wd = plus.nativeUI.showWaiting("获取信息中，请等待...",{back:"none"});
-			      			var params={breInfoId:event.detail.id};
-			      			app.webQuery(app.getbredetail_url,params,onSuccess,onError,1);
+			      			var params={plaInfoId:event.detail.id};
+			      			app.webQuery(app.getpladetail_url,params,onSuccess,onError,1);
 			      		}
 			     	});
 			     	
 					/*保存按钮响应*/
 					doc.getElementById('submitBtn').addEventListener('tap',function(){
 						
-						var params={account:userInfo.username(), breInfoId:infoId};
-						var breRegion=app.getValue('breRegion');
-						var breType=app.getValue('breType');
-						var breCount= app.getValue('breCount');
-						if(!breRegion){
-							mui.toast(errorCode.EMPTY_BREREGION);
+						var params={account:userInfo.username()};
+						var plaRegion=app.getValue('plaRegion');
+						var plaCategory=app.getValue('plaCategory');
+						var plaArea= app.getValue('plaArea');
+						var plaType=app.getValue('plaType');
+						
+						if(!plaRegion){
+							mui.toast(errorCode.EMPTY_PLAREGION);
 							return;
 						}
-						if(!breType){
-							mui.toast(errorCode.EMPTY_BRETYPE);
+						if(!plaCategory){
+							mui.toast(errorCode.EMPTY_PLACATEGORY);
 							return;
 						}
-						if(!breCount){
-							mui.toast(errorCode.EMPTY_BRECOUNT);
+						if(!plaArea){
+							mui.toast(errorCode.EMPTY_PLAAREA);
 							return;
 						}
-						params.breRegion=breRegion;
-						params.breType=breType;
-						params.breCount=breCount;
-						params.breComment=app.getValue('breComment');
+						if(!plaType){
+							mui.toast(errorCode.EMPTY_PLATYPE);
+							return;
+						}
+						params.plaRegion=plaRegion;
+						params.plaType=plaType;
+						params.plaArea=plaArea;
+						params.plaCategory=plaCategory;
+						params.plaComment=app.getValue('plaComment');
 						
 						wd = plus.nativeUI.showWaiting("信息提交中，请等待...",{back:"none"});
-		      			app.webQuery(app.savebredetail_url,params,onSubmitSuccess,onSubmitError,1);
+		      			app.webQuery(app.savepladetail_url,params,onSubmitSuccess,onSubmitError,1);
 					});					
 				});
 			})(mui, document);
