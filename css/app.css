@@ -138,8 +138,8 @@ textarea{
 
 /*登录页部分的CSS样式*/
 #logincontent{
-	-webkit-transform: translate(0, 50%);
-	transform: translate(0, 50%);
+	-webkit-transform: translate(0, 30%);
+	transform: translate(0, 30%);
 }
 
 #logincontent h2{

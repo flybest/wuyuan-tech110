@@ -24,8 +24,8 @@
 				</div>
 				<div class="mui-input-row">
 					<label>种类<span class="redFont">*</span></label>
-					<button id='breCategory' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择养殖种类</button>
-					<span id="breCategory-span" class="rightContent" style="display:none;"></span>
+					<button id='breCategory' class="mui-btn mui-btn-block mui-text-left buttonOnRight" type='button'>请选择养殖种类</button>
+					<span id="breCategory-span" class="rightContent" style="display:none;"></span>
 				</div>
 				<div class="mui-input-row">
 					<label>数量<span class="redFont">*</span></label>
@@ -52,7 +52,7 @@
 		<script type="text/javascript" src="../../js/brecate.data.js" ></script>
 		<script type="text/javascript" src="../../js/userinfo.js" ></script>
 		<script>
-			var fixedSpan=['breRegion-span','breCategory-span'];
+			var fixedSpan=['breRegion-span','breCategory-span'];
 			var wd, infoId='';
 			
 			var setSpanVisiable = function(isShow){
@@ -75,8 +75,8 @@
 				infoId='';
 				app.setHTML('#breRegion', '请选择所在地');
 				app.setValue('breRegion', '');
-				app.setHTML('#breCategory', '请选择养殖种类');
-				app.setValue('breCategory', '');
+				app.setHTML('#breCategory', '请选择养殖种类');
+				app.setValue('breCategory', '');
 				
 				mui('input').each(function(i,obj){
 					obj.value='';
@@ -105,8 +105,8 @@
 					});
 
 					app.setText('#breRegion-span',app.getTextByCode(cityData,data.breRegion));
-					app.setText('#breCategory-span',app.getTextByCode(breCateData,data.breCategory,''));
-					app.setText('#breCountUnit', getUnitByValue(breCateData,data.breCategory));
+					app.setText('#breCategory-span',app.getTextByCode(breCateData,data.breCategory,''));
+					app.setText('#breCountUnit', getUnitByValue(breCateData,data.breCategory));
 					
 					setSpanVisiable(true);
 					app.setElementVisiablity('#publishDateRow',true);
@@ -157,13 +157,13 @@
 					}, false);
 					
 					//选择灾害类型
-					var breCategoryPicker = new $.PopPicker();
-					breCategoryPicker.setData(breCateData);
-					var breCategoryBtn = doc.getElementById('breCategory');
-					breCategoryBtn.addEventListener('tap', function(event) {
-						breCategoryPicker.show(function(items) {
-							breCategoryBtn.innerText = items[0].text;
-							breCategoryBtn.value = items[0].value;
+					var breCategoryPicker = new $.PopPicker();
+					breCategoryPicker.setData(breCateData);
+					var breCategoryBtn = doc.getElementById('breCategory');
+					breCategoryBtn.addEventListener('tap', function(event) {
+						breCategoryPicker.show(function(items) {
+							breCategoryBtn.innerText = items[0].text;
+							breCategoryBtn.value = items[0].value;
 							app.setText('#breCountUnit', items[0].unit);
 							//返回 false 可以阻止选择框的关闭
 							//return false;
@@ -185,14 +185,14 @@
 						
 						var params={account:userInfo.username()};
 						var breRegion=app.getValue('breRegion');
-						var breCategory=app.getValue('breCategory');
+						var breCategory=app.getValue('breCategory');
 						var breCount= app.getValue('breCount');
 						if(!breRegion){
 							mui.toast(errorCode.EMPTY_BREREGION);
 							return;
 						}
-						if(!breCategory){
-							mui.toast(errorCode.EMPTY_BRECATEGORY);
+						if(!breCategory){
+							mui.toast(errorCode.EMPTY_BRECATEGORY);
 							return;
 						}
 						if(!breCount){
@@ -200,7 +200,7 @@
 							return;
 						}
 						params.breRegion=breRegion;
-						params.breCategory=breCategory;
+						params.breCategory=breCategory;
 						params.breCount=breCount;
 						params.breComment=app.getValue('breComment');
 						

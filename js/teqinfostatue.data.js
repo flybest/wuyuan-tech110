@@ -1,4 +1,4 @@
-2var teqInfoStatueData=[{
+var teqInfoStatueData=[{
 		"value": "1",
 		"text": "已保存"
 	}, {
