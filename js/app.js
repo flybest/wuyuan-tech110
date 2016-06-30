@@ -1,5 +1,5 @@
 (function($, owner) {
-	var BASE_URL='http://192.168.25.81/wuyuan-tech110/';
+	var BASE_URL='http://192.168.25.104/wuyuan-tech110/';
 	//var BASE_URL='http://192.168.3.34/wuyuan-tech110/';
 	owner.project_url = BASE_URL;
 	//owner.project_url = '';
