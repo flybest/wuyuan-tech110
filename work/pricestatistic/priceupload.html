@@ -32,12 +32,12 @@
 		</div>	
 		<div id="productList">
 			<!--<div class="mui-input-group item-group workBlock">
-				<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入品种"></div>
+				<div class="mui-input-row"><label>品种</label><button class="mui-btn mui-btn-block mui-text-left buttonOnRight productCategory" type='button'>请选择品种</button></div>
 				<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入价格"></div>
 				<span class="mui-icon mui-icon-close delIcon"></span>
 			</div>
 			<div class="mui-input-group item-group workBlock">
-				<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入品种"></div>
+				<div class="mui-input-row"><label>品种</label><button class="mui-btn mui-btn-block mui-text-left buttonOnRight productCategory" type='button'>请选择品种</button></div>
 				<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入价格"></div>
 				<span class="mui-icon mui-icon-close delIcon"></span>
 			</div>-->
@@ -59,16 +59,29 @@
 			var productForm=document.getElementById('productList');
 			var div=document.createElement('div');
 			div.className='mui-input-group item-group workBlock';
-			div.innerHTML='<div class="mui-input-row"><label>品种</label><input type="text" class="productCategory" placeholder="请输入品种"></div>'+
+			div.innerHTML='<div class="mui-input-row"><label>品种</label><button class="mui-btn mui-btn-block mui-text-left buttonOnRight productCategory" type="button">请选择品种</button></div>'+
 			'<div class="mui-input-row"><label>价格(元)</label><input type="text" class="productPrice" placeholder="请输入价格"></div>'+
 			'<span class="mui-icon mui-icon-close delIcon"></span>';
 			productForm.insertBefore(div,productForm.firstChild);
 			if(product){
-				div.querySelector('.productCategory').value=product.productCategory;
+				div.querySelector('.productCategory').value=product.productId;
+				div.querySelector('.productCategory').innerText=app.getTextByValue(plantCategoryData,product.productCategory);
 				div.querySelector('.productCategory').setAttribute('disabled',true);
 				div.querySelector('.productPrice').value=product.productPrice;
 				div.querySelector('.delIcon').className='mui-icon mui-icon-close delIcon delIcon-disable';
 			}else{
+				var categoryPicker = new mui.PopPicker();
+				categoryPicker.setData(plantCategoryData);
+				var categoryBtn = div.querySelector('.productCategory');
+				categoryBtn.addEventListener('tap', function(event) {
+					categoryPicker.show(function(items) {
+						categoryBtn.innerText = items[0].text;
+						categoryBtn.value = items[0].value;;
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					});
+				}, false);
+				
 				var delBtn=div.querySelector('.delIcon');
 				delBtn.addEventListener('tap', function(){
 					var btn = ["确定","取消"];
@@ -77,7 +90,7 @@
 							removeProduct(div);
 						}
 					});
-				});
+				}, false);
 			}
 		}; 
 		
@@ -105,14 +118,12 @@
 		var onSuccess = function(data){
 			//处理DOM对象，显示信息内容
 			try{
-				 app.setValue('market', data.market);
-				 app.setText('#market',app.getTextByValue(marketData,data.market));
-				 app.setText('#market-span',app.getTextByValue(marketData,data.market));
+				app.setValue('market', data.market);
+				app.setText('#market',app.getTextByValue(marketData,data.market));
+				app.setText('#market-span',app.getTextByValue(marketData,data.market));
 				 
-				 app.setElementVisiablity('#addProduct',false);
-				 for(var i=0;i<data.product.length;i++){
-				 	addProduct(data.product[i]);
-				 }
+				app.setElementVisiablity('#addProduct',false);
+				addProduct({productId:productId, productCategory:data.productCategory, productPrice:data.productPrice});
 				app.setElementVisiablity('#market-span',true);
 				app.setElementVisiablity('#market',false);
 			}catch(e){
@@ -186,6 +197,7 @@
 					var productList=[];
 					var categoryList=document.querySelectorAll('.productCategory');
 					var priceList=document.querySelectorAll('.productPrice');
+					var params={account:userInfo.username()};
 					if(productId){
 						for (var i=0;i<priceList.length;i++) {
 							if(!priceList[i].value){
@@ -194,25 +206,28 @@
 								return;
 							}
 						};
+						params.productPrice=priceList[0].value;
 					}else{
 						if(!market){
 							mui.toast(errorCode.EMPTY_MARKET);
 							return;
 						}
-					}
-					
-					for(var i=0;i<categoryList.length;i++){
-						if(categoryList[i].value && priceList[i].value){
-							productList.push({productCategory:categoryList[i].value,productPrice:priceList[i].value});
-						}
-					}
-					
-					if(productList.length==0){
-						mui.toast(errorCode.EMPTY_PRODUCTLIST);
-						return;
-					}
 
-					var params={account:userInfo.username(), productId:productId, market:market, productList:JSON.stringify(productList)};	
+						for(var i=0;i<categoryList.length;i++){
+							if(categoryList[i].value && priceList[i].value){
+								productList.push({productCategory:categoryList[i].value,productPrice:priceList[i].value});
+							}
+						}
+						
+						if(productList.length==0){
+							mui.toast(errorCode.EMPTY_PRODUCTLIST);
+							return;
+						}
+						params.market=market;
+						params.productList=JSON.stringify(productList);
+					}
+					
+					params.productId=productId;
 					wd = plus.nativeUI.showWaiting("信息提交中，请等待...",{back:"none"});
 					app.webQuery(app.saveproductdetail_url, params,onSubmitSuccess,onSubmitError,1);
 				});

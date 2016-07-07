@@ -86,7 +86,7 @@
 				for (var i = 0; i < data.respondCount; i++) {
 					var li = document.createElement('li');
 					li.className = 'mui-table-view-cell';
-					li.innerHTML = '<span class="productCategory">'+ data.product[i].productCategory +'</span>'
+					li.innerHTML = '<span class="productCategory">'+ app.getTextByValue(plantCategoryData,data.product[i].productCategory) +'</span>'
 					table.appendChild(li);
 					if(data.product[i].needFix){
 						li.innerHTML+='<button id="'+ data.product[i].productId +'" type="button" class="mui-btn mui-btn-primary">重报</button>';

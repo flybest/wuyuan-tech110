@@ -1,5 +1,5 @@
 (function($, owner) {
-	var BASE_URL='http://192.168.25.104/wuyuan-tech110/';
+	var BASE_URL='http://192.168.24.82/wuyuan-tech110/';
 	//var BASE_URL='http://192.168.3.34/wuyuan-tech110/';
 	owner.project_url = BASE_URL;
 	//owner.project_url = '';
@@ -85,14 +85,31 @@
 		return textFromCode(data, code, seperator);
 	}
 	
+//	function textFromCode(data, code, seperator){
+//		var text='';
+//		for(var i=0;i<data.length;i++){
+//			if(code.indexOf(data[i].value)>=0){
+//				text=data[i].text;
+//				if(data[i].children)
+//					text+=(seperator+textFromCode(data[i].children,code,seperator));
+//				break;
+//			}
+//		}
+//		return text;
+//	}
+
 	function textFromCode(data, code, seperator){
 		var text='';
 		for(var i=0;i<data.length;i++){
-			if(code.indexOf(data[i].value)>=0){
-				text=data[i].text;
-				if(data[i].children)
-					text+=(seperator+textFromCode(data[i].children,code,seperator));
-				break;
+			if(data[i].children){
+				text=textFromCode(data[i].children,code,seperator);
+				if(text!=''){
+					return data[i].text+seperator+text;
+				}
+			}
+
+			if(data[i].value==code){
+				return data[i].text;
 			}
 		}
 		return text;

@@ -4,8 +4,6 @@ header("Access-Control-Allow-Methods: POST, GET");
 header("Access-Control-Allow-Headers: x-requested-with");
 //echo "{err:'ok',token:'token123456'}";
 
-$product1 = array('productId'=>'a'.rand(100000,999999), 'productCategory'=>'苹果', 'productPrice'=>'4.50');
-$productArray = array($product1);
-$result = array('err' => 'ok', 'market' =>'1','product'=>$productArray);
+$result = array('err' => 'ok', 'market' =>'1','productCategory'=>'2', 'productPrice'=>'4.50');
 echo json_encode($result);
 ?>
